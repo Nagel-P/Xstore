@@ -1,0 +1,8 @@
+2026-05-12 21:08:34.832999-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM INFORMATION_SCHEMA.USERS \000d\000a\000d\000aINFORMATION_SCHEMA[*].CHECK_CONSTRAINTS"; SQL statement:
+SELECT * FROM INFORMATION_SCHEMA.USERS 
+
+INFORMATION_SCHEMA.CHECK_CONSTRAINTS [42000-232]
+2026-05-12 21:28:56.909893-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]POST http://localhost:8080/produtos"; expected "PREPARE"; SQL statement:
+POST http://localhost:8080/produtos [42001-232]
