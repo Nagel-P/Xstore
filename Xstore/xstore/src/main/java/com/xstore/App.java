@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import com.xstore.database.H2Console;
 import com.xstore.database.DbScript;
 import com.xstore.handler.ProdutoHandler;
+import com.xstore.handler.UsuarioHandler;
 
 import java.net.InetSocketAddress;
 
@@ -25,6 +26,11 @@ public class App {
         server.createContext(
                 "/produtos",
                 new ProdutoHandler()
+        );
+
+        server.createContext(
+                "/usuarios",
+                new UsuarioHandler()
         );
 
         server.setExecutor(null);

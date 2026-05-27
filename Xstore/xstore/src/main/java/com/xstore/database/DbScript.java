@@ -18,16 +18,33 @@ public class DbScript {
         ) {
 
             String sql = Files.readString(
-                    Paths.get("schema.sql")
+                Paths.get("./Xstore/xstore/schema.sql")
             );
 
-            stmt.execute(sql);
+            String[] comandos =
+                    sql.split(";");
+
+            for (String comando : comandos) {
+
+                if (!comando.trim().isEmpty()) {
+
+                    System.out.println(
+                            "EXECUTANDO:\n" + comando
+                    );
+
+                    stmt.execute(comando);
+                }
+            }
 
             System.out.println(
                     "Banco inicializado!"
             );
 
         } catch (Exception e) {
+
+            System.out.println(
+                    "ERRO NO SCRIPT SQL:"
+            );
 
             e.printStackTrace();
         }
