@@ -5,6 +5,7 @@ import com.xstore.database.H2Console;
 import com.xstore.database.DbScript;
 import com.xstore.handler.ProdutoHandler;
 import com.xstore.handler.UsuarioHandler;
+import com.xstore.handler.PedidoHandler;
 
 import java.net.InetSocketAddress;
 
@@ -31,6 +32,11 @@ public class App {
         server.createContext(
                 "/usuarios",
                 new UsuarioHandler()
+        );
+
+        server.createContext(
+        "/pedidos",
+        new PedidoHandler()
         );
 
         server.setExecutor(null);

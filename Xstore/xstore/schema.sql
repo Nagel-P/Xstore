@@ -45,3 +45,37 @@ CREATE TABLE IF NOT EXISTS usuario (
 
     uf VARCHAR(2)
 );
+
+CREATE TABLE IF NOT EXISTS pedido (
+
+    id IDENTITY PRIMARY KEY,
+
+    usuario_email VARCHAR(255),
+
+    preco_produtos DOUBLE,
+
+    preco_frete DOUBLE,
+
+    preco_total DOUBLE,
+
+    FOREIGN KEY (usuario_email)
+        REFERENCES usuario(email)
+);
+
+CREATE TABLE IF NOT EXISTS pedido_produto (
+
+    pedido_id BIGINT,
+
+    produto_id BIGINT,
+
+    PRIMARY KEY (
+        pedido_id,
+        produto_id
+    ),
+
+    FOREIGN KEY (pedido_id)
+        REFERENCES pedido(id),
+
+    FOREIGN KEY (produto_id)
+        REFERENCES produto(id)
+);
