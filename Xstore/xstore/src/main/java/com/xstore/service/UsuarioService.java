@@ -4,15 +4,17 @@ import com.xstore.model.Usuario;
 import com.xstore.model.ViaCepResponse;
 import com.xstore.repository.UsuarioRepo;
 
-public class UsuarioService {
+import java.util.List;
 
-    private final ViaCepService viaCepService =
-            new ViaCepService();
+public class UsuarioService {
 
     private final UsuarioRepo repo =
             new UsuarioRepo();
 
-    public Usuario preencherEndereco(
+    private final ViaCepService viaCepService =
+            new ViaCepService();
+
+    public Usuario salvar(
             Usuario usuario
     ) throws Exception {
 
@@ -37,7 +39,14 @@ public class UsuarioService {
                 response.getUf()
         );
 
+        repo.salvar(usuario);
+
         return usuario;
+    }
+
+    public List<Usuario> listarTodos() {
+
+        return repo.listarTodos();
     }
 
     public Usuario buscarPorEmail(

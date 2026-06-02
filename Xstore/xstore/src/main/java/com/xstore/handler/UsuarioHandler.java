@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.xstore.model.Usuario;
-import com.xstore.repository.UsuarioRepo;
 import com.xstore.service.UsuarioService;
 
 import java.io.IOException;
@@ -12,14 +11,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-public class UsuarioHandler
-        implements HttpHandler {
+public class UsuarioHandler implements HttpHandler {
 
     private final ObjectMapper mapper =
             new ObjectMapper();
-
-    private final UsuarioRepo repo =
-            new UsuarioRepo();
 
     private final UsuarioService service =
             new UsuarioService();
@@ -34,36 +29,34 @@ public class UsuarioHandler
             String metodo =
                     exchange.getRequestMethod();
 
-            if (metodo.equals("POST")) {
+            switch (metodo) {
 
-                criar(exchange);
+                case "POST" -> criar(exchange);
 
-            } else if (
-                    metodo.equals("GET")
-            ) {
+                case "GET" -> {
 
-                String path =
-                        exchange.getRequestURI()
-                                .getPath();
+                    String path =
+                            exchange.getRequestURI()
+                                    .getPath();
 
-                String[] partes =
-                        path.split("/");
+                    String[] partes =
+                            path.split("/");
 
-                if (partes.length == 2) {
+                    if (partes.length <= 2) {
 
-                    listar(exchange);
+                        listar(exchange);
 
-                } else {
+                    } else {
 
-                    buscarPorEmail(exchange);
+                        buscarPorEmail(exchange);
+                    }
                 }
 
-            } else {
-
-                exchange.sendResponseHeaders(
-                        405,
-                        -1
-                );
+                default ->
+                        exchange.sendResponseHeaders(
+                                405,
+                                -1
+                        );
             }
 
         } catch (Exception e) {
@@ -71,29 +64,17 @@ public class UsuarioHandler
             String erro =
                     """
                     {
-                        "erro": "%s"
+                      "erro":"%s"
                     }
                     """.formatted(
                             e.getMessage()
                     );
 
-            exchange.getResponseHeaders()
-                    .add(
-                            "Content-Type",
-                            "application/json"
-                    );
-
-            exchange.sendResponseHeaders(
-                    500,
-                    erro.getBytes().length
+            enviarResposta(
+                    exchange,
+                    erro,
+                    500
             );
-
-            OutputStream os =
-                    exchange.getResponseBody();
-
-            os.write(erro.getBytes());
-
-            os.close();
         }
     }
 
@@ -110,12 +91,7 @@ public class UsuarioHandler
                         Usuario.class
                 );
 
-        usuario =
-                service.preencherEndereco(
-                        usuario
-                );
-
-        repo.salvar(usuario);
+        service.salvar(usuario);
 
         String json =
                 mapper.writeValueAsString(
@@ -134,7 +110,7 @@ public class UsuarioHandler
     ) throws Exception {
 
         List<Usuario> usuarios =
-                repo.listarTodos();
+                service.listarTodos();
 
         String json =
                 mapper.writeValueAsString(
@@ -163,7 +139,9 @@ public class UsuarioHandler
                 partes[2];
 
         Usuario usuario =
-                service.buscarPorEmail(email);
+                service.buscarPorEmail(
+                        email
+                );
 
         String json =
                 mapper.writeValueAsString(

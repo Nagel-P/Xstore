@@ -1,5 +1,8 @@
 package com.xstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ViaCepResponse {
 
     private String cep;
@@ -27,9 +30,7 @@ public class ViaCepResponse {
         return logradouro;
     }
 
-    public void setLogradouro(
-            String logradouro
-    ) {
+    public void setLogradouro(String logradouro) {
         this.logradouro = logradouro;
     }
 
@@ -37,9 +38,7 @@ public class ViaCepResponse {
         return bairro;
     }
 
-    public void setBairro(
-            String bairro
-    ) {
+    public void setBairro(String bairro) {
         this.bairro = bairro;
     }
 
@@ -47,9 +46,7 @@ public class ViaCepResponse {
         return localidade;
     }
 
-    public void setLocalidade(
-            String localidade
-    ) {
+    public void setLocalidade(String localidade) {
         this.localidade = localidade;
     }
 
