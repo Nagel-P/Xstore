@@ -22,13 +22,13 @@ public class PedidoService {
             new ProdutoRepo();
 
     public Pedido criarPedido(
-            String emailUsuario,
+            Long usuarioId,
             List<Long> produtosIds
     ) {
 
         Usuario usuario =
-                usuarioRepo.buscarPorEmail(
-                        emailUsuario
+                usuarioRepo.buscarPorId(
+                        usuarioId
                 );
 
         if (usuario == null) {

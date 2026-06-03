@@ -48,7 +48,7 @@ public class UsuarioHandler implements HttpHandler {
 
                     } else {
 
-                        buscarPorEmail(exchange);
+                        buscarPorId(exchange);
                     }
                 }
 
@@ -124,7 +124,7 @@ public class UsuarioHandler implements HttpHandler {
         );
     }
 
-    private void buscarPorEmail(
+    private void buscarPorId(
             HttpExchange exchange
     ) throws Exception {
 
@@ -135,12 +135,14 @@ public class UsuarioHandler implements HttpHandler {
         String[] partes =
                 path.split("/");
 
-        String email =
-                partes[2];
+        Long id =
+                Long.parseLong(
+                        partes[2]
+                );
 
         Usuario usuario =
-                service.buscarPorEmail(
-                        email
+                service.buscarPorId(
+                        id
                 );
 
         String json =

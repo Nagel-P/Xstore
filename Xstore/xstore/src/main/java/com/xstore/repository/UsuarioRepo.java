@@ -6,6 +6,7 @@ import com.xstore.model.Usuario;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,10 @@ public class UsuarioRepo {
                         DbConnection.getConnection();
 
                 PreparedStatement stmt =
-                        conn.prepareStatement(sql)
+                        conn.prepareStatement(
+                                sql,
+                                Statement.RETURN_GENERATED_KEYS
+                        )
         ) {
 
             stmt.setString(
@@ -94,6 +98,16 @@ public class UsuarioRepo {
 
             stmt.executeUpdate();
 
+            ResultSet rs =
+                    stmt.getGeneratedKeys();
+
+            if (rs.next()) {
+
+                usuario.setId(
+                        rs.getLong(1)
+                );
+            }
+
         } catch (Exception e) {
 
             throw new RuntimeException(
@@ -125,6 +139,10 @@ public class UsuarioRepo {
 
                 Usuario usuario =
                         new Usuario();
+
+                usuario.setId(
+                        rs.getLong("id")
+                );
 
                 usuario.setEmail(
                         rs.getString("email")
@@ -176,90 +194,95 @@ public class UsuarioRepo {
             );
         }
 
-        
-
         return usuarios;
     }
 
-    public Usuario buscarPorEmail(
-        String email
-) {
-
-    String sql =
-            """
-            SELECT * FROM usuario
-            WHERE email = ?
-            """;
-
-    try (
-            Connection conn =
-                    DbConnection.getConnection();
-
-            PreparedStatement stmt =
-                    conn.prepareStatement(sql)
+    public Usuario buscarPorId(
+            Long id
     ) {
 
-        stmt.setString(1, email);
+        String sql =
+                """
+                SELECT *
+                FROM usuario
+                WHERE id = ?
+                """;
 
-        ResultSet rs =
-                stmt.executeQuery();
+        try (
+                Connection conn =
+                        DbConnection.getConnection();
 
-        if (rs.next()) {
+                PreparedStatement stmt =
+                        conn.prepareStatement(sql)
+        ) {
 
-            Usuario usuario =
-                    new Usuario();
-
-            usuario.setEmail(
-                    rs.getString("email")
+            stmt.setLong(
+                    1,
+                    id
             );
 
-            usuario.setNome(
-                    rs.getString("nome")
-            );
+            ResultSet rs =
+                    stmt.executeQuery();
 
-            usuario.setCpf(
-                    rs.getString("cpf")
-            );
+            if (rs.next()) {
 
-            usuario.setTelefone(
-                    rs.getString("telefone")
-            );
+                Usuario usuario =
+                        new Usuario();
 
-            usuario.setCep(
-                    rs.getString("cep")
-            );
+                usuario.setId(
+                        rs.getLong("id")
+                );
 
-            usuario.setRua(
-                    rs.getString("rua")
-            );
+                usuario.setEmail(
+                        rs.getString("email")
+                );
 
-            usuario.setNumero(
-                    rs.getString("numero")
-            );
+                usuario.setNome(
+                        rs.getString("nome")
+                );
 
-            usuario.setBairro(
-                    rs.getString("bairro")
-            );
+                usuario.setCpf(
+                        rs.getString("cpf")
+                );
 
-            usuario.setCidade(
-                    rs.getString("cidade")
-            );
+                usuario.setTelefone(
+                        rs.getString("telefone")
+                );
 
-            usuario.setUf(
-                    rs.getString("uf")
-            );
+                usuario.setCep(
+                        rs.getString("cep")
+                );
 
-            return usuario;
+                usuario.setRua(
+                        rs.getString("rua")
+                );
+
+                usuario.setNumero(
+                        rs.getString("numero")
+                );
+
+                usuario.setBairro(
+                        rs.getString("bairro")
+                );
+
+                usuario.setCidade(
+                        rs.getString("cidade")
+                );
+
+                usuario.setUf(
+                        rs.getString("uf")
+                );
+
+                return usuario;
+            }
+
+            return null;
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(
+                    "Erro ao buscar usuário"
+            );
         }
-
-        return null;
-
-    } catch (Exception e) {
-
-        throw new RuntimeException(
-                "Erro ao buscar usuário"
-        );
     }
 }
-}
-

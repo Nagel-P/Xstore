@@ -49,12 +49,12 @@ public class UsuarioService {
         return repo.listarTodos();
     }
 
-    public Usuario buscarPorEmail(
-            String email
+    public Usuario buscarPorId(
+            Long id
     ) {
 
         Usuario usuario =
-                repo.buscarPorEmail(email);
+                repo.buscarPorId(id);
 
         if (usuario == null) {
 

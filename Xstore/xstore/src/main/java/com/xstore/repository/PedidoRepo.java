@@ -17,13 +17,15 @@ public class PedidoRepo {
     private final ProdutoRepo produtoRepo =
             new ProdutoRepo();
 
-    public void salvar(Pedido pedido) {
+    public void salvar(
+            Pedido pedido
+    ) {
 
         String sqlPedido =
                 """
                 INSERT INTO pedido
                 (
-                    usuario_email,
+                    usuario_id,
                     preco_produtos,
                     preco_frete,
                     preco_total
@@ -42,9 +44,9 @@ public class PedidoRepo {
                             Statement.RETURN_GENERATED_KEYS
                     );
 
-            stmtPedido.setString(
+            stmtPedido.setLong(
                     1,
-                    pedido.getUsuario().getEmail()
+                    pedido.getUsuario().getId()
             );
 
             stmtPedido.setDouble(
@@ -154,7 +156,9 @@ public class PedidoRepo {
         return pedidos;
     }
 
-    public Pedido buscarPorId(Long id) {
+    public Pedido buscarPorId(
+            Long id
+    ) {
 
         String sql =
                 """
@@ -206,14 +210,14 @@ public class PedidoRepo {
                 rs.getInt("id")
         );
 
-        String email =
-                rs.getString(
-                        "usuario_email"
+        Long usuarioId =
+                rs.getLong(
+                        "usuario_id"
                 );
 
         Usuario usuario =
-                usuarioRepo.buscarPorEmail(
-                        email
+                usuarioRepo.buscarPorId(
+                        usuarioId
                 );
 
         pedido.setUsuario(usuario);

@@ -66,35 +66,25 @@ public class PedidoHandler implements HttpHandler {
         } catch (Exception e) {
 
             String erro =
-                    "{\"erro\":\""
-                            + e.getMessage()
-                            + "\"}";
-
-            exchange
-                    .getResponseHeaders()
-                    .add(
-                            "Content-Type",
-                            "application/json"
+                    """
+                    {
+                      "erro":"%s"
+                    }
+                    """.formatted(
+                            e.getMessage()
                     );
 
-            exchange.sendResponseHeaders(
-                    500,
-                    erro.getBytes().length
+            responder(
+                    exchange,
+                    erro,
+                    500
             );
-
-            OutputStream os =
-                    exchange.getResponseBody();
-
-            os.write(
-                    erro.getBytes()
-            );
-
-            os.close();
 
             e.printStackTrace();
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void criar(
             HttpExchange exchange
     ) throws Exception {
@@ -102,15 +92,16 @@ public class PedidoHandler implements HttpHandler {
         InputStream body =
                 exchange.getRequestBody();
 
-        Map<String, Object> dados =
+        Map<?, ?> dados =
                 mapper.readValue(
                         body,
                         Map.class
                 );
 
-        String emailUsuario =
-                (String) dados.get(
-                        "emailUsuario"
+        Long usuarioId =
+                Long.valueOf(
+                        dados.get("usuarioId")
+                                .toString()
                 );
 
         List<Integer> produtosInt =
@@ -126,7 +117,7 @@ public class PedidoHandler implements HttpHandler {
 
         Pedido pedido =
                 service.criarPedido(
-                        emailUsuario,
+                        usuarioId,
                         produtos
                 );
 
@@ -177,16 +168,6 @@ public class PedidoHandler implements HttpHandler {
         Pedido pedido =
                 service.buscarPorId(id);
 
-        if (pedido == null) {
-
-            exchange.sendResponseHeaders(
-                    404,
-                    -1
-            );
-
-            return;
-        }
-
         String json =
                 mapper.writeValueAsString(
                         pedido
@@ -205,8 +186,7 @@ public class PedidoHandler implements HttpHandler {
             int status
     ) throws IOException {
 
-        exchange
-                .getResponseHeaders()
+        exchange.getResponseHeaders()
                 .add(
                         "Content-Type",
                         "application/json"
